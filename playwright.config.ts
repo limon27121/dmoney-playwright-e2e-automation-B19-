@@ -31,6 +31,10 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: 'http://localhost:3000',
 
+    /* App defaults Self Statement range to the UTC date but filters in local time,
+       so between 00:00-06:00 BST new transactions are hidden. UTC keeps both in sync. */
+    timezoneId: 'UTC',
+
     /* Reuse saved session from auth.json when it exists */
     storageState: fs.existsSync(authFile) ? authFile : undefined,
 
