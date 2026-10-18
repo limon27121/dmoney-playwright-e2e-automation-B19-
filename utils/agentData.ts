@@ -33,6 +33,18 @@ export function saveAgent(agent: UserData) {
   fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
 }
 
+// Keeps agent.json and history in sync after a password reset
+export function updateAgentPassword(email: string, password: string) {
+  const agent = loadAgent();
+  if (agent.email === email) fs.writeFileSync(agentFile, JSON.stringify({ ...agent, password }, null, 2));
+
+  if (fs.existsSync(historyFile)) {
+    const history: UserData[] = JSON.parse(fs.readFileSync(historyFile, 'utf-8'));
+    history.forEach((entry) => entry.email === email && (entry.password = password));
+    fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
+  }
+}
+
 export function loadAgent(): UserData {
   return JSON.parse(fs.readFileSync(agentFile, 'utf-8'));
 }
