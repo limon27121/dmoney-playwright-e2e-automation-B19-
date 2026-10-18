@@ -135,4 +135,5 @@ All of these are git-ignored.
 
 ## Smoke Test Result
 
-<!-- Add screenshot of the smoke run here -->
+![Smoke Test Result 1](screenshots/smoke01.png)
+![Smoke Test Result 2](screenshots/smoke02.png)
