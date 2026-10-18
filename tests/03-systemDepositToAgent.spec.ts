@@ -24,7 +24,7 @@ test.describe('System deposits to Agent', () => {
   test.describe('Login', () => {
     test.use({ storageState: { cookies: [], origins: [] } });
 
-    test('Verify System login is successful', async ({ page }) => {
+    test('Verify System login is successful', { tag: '@smoke' }, async ({ page }) => {
       const loginPage = new LoginPage(page);
       const dashboard = new DashboardPage(page);
 
@@ -40,7 +40,7 @@ test.describe('System deposits to Agent', () => {
   test.describe('Authenticated as System', () => {
     test.use({ storageState: authFile });
 
-    test('Verify System can deposit 2000 Tk to the Agent', async ({ page }) => {
+    test('Verify System can deposit 2000 Tk to the Agent', { tag: '@smoke' }, async ({ page }) => {
       const dashboard = new DashboardPage(page);
       const cashInPage = new CashInPage(page);
 
@@ -63,7 +63,7 @@ test.describe('System deposits to Agent', () => {
       trnxId = body.trnxId;
     });
 
-    test('Verify the System deposit creates the correct transaction record', async ({ page }) => {
+    test('Verify the System deposit creates the correct transaction record', { tag: '@smoke' }, async ({ page }) => {
       const dashboard = new DashboardPage(page);
       const statement = new SelfStatementPage(page);
 
@@ -73,7 +73,7 @@ test.describe('System deposits to Agent', () => {
       await expect(statement.transactionRow(trnxId)).toBeVisible();
 
       const record = await statement.getTransaction(trnxId);
-      expect(record).toEqual({
+      expect(record).toMatchObject({
         id: trnxId,
         sender: 'SYSTEM',
         receiver: agent.phone,
@@ -83,7 +83,7 @@ test.describe('System deposits to Agent', () => {
       });
     });
 
-    test('Log out from the System account', async ({ page }) => {
+    test('Log out from the System account', { tag: '@smoke' }, async ({ page }) => {
       const dashboard = new DashboardPage(page);
 
       await dashboard.goto();

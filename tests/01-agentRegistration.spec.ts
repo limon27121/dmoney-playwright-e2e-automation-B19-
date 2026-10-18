@@ -9,14 +9,14 @@ test.use({ storageState: { cookies: [], origins: [] } });
 const agent = generateAgent();
 
 test.describe('Agent Registration', () => {
-  test('Navigate to Sign Up page from home', async ({ page }) => {
+  test('Navigate to Sign Up page from home', { tag: '@smoke' }, async ({ page }) => {
     const home = new HomePage(page);
     await home.goto();
     await home.clickSignUp();
     await expect(page).toHaveURL(/\/register$/);
   });
 
-  test('Verify Agent registration is successful', async ({ page }) => {
+  test('Verify Agent registration is successful', { tag: '@smoke' }, async ({ page }) => {
     const registerPage = new RegisterPage(page);
     await registerPage.goto();
 

@@ -23,7 +23,7 @@ test.describe('Admin activates Agent', () => {
   test.describe('Login', () => {
     test.use({ storageState: { cookies: [], origins: [] } });
 
-    test('Verify Admin login is successful', async ({ page }) => {
+    test('Verify Admin login is successful', { tag: '@smoke' }, async ({ page }) => {
       const home = new HomePage(page);
       const loginPage = new LoginPage(page);
       const dashboard = new DashboardPage(page);
@@ -43,7 +43,7 @@ test.describe('Admin activates Agent', () => {
   test.describe('Authenticated as Admin', () => {
     test.use({ storageState: authFile });
 
-    test('Verify the newly created Agent appears in the Admin user list', async ({ page }) => {
+    test('Verify the newly created Agent appears in the Admin user list', { tag: '@smoke' }, async ({ page }) => {
       const dashboard = new DashboardPage(page);
       const userList = new UserListPage(page);
 
@@ -57,7 +57,7 @@ test.describe('Admin activates Agent', () => {
       await expect(userList.userRow(agent.email)).toContainText('Agent');
     });
 
-    test('Verify the newly created Agent is initially inactive', async ({ page }) => {
+    test('Verify the newly created Agent is initially inactive', { tag: '@smoke' }, async ({ page }) => {
       const userList = new UserListPage(page);
       const userDetails = new UserDetailsPage(page);
 
@@ -69,7 +69,7 @@ test.describe('Admin activates Agent', () => {
       await expect(userDetails.statusDropdown).toHaveText('Pending');
     });
 
-    test('Verify Admin can activate the Agent', async ({ page }) => {
+    test('Verify Admin can activate the Agent', { tag: '@smoke' }, async ({ page }) => {
       const userList = new UserListPage(page);
       const userDetails = new UserDetailsPage(page);
 
@@ -82,7 +82,7 @@ test.describe('Admin activates Agent', () => {
       await expect(userDetails.statusDropdown).toHaveText('Active');
     });
 
-    test('Verify the Agent remains active after page reload', async ({ page }) => {
+    test('Verify the Agent remains active after page reload', { tag: '@smoke' }, async ({ page }) => {
       const userList = new UserListPage(page);
       const userDetails = new UserDetailsPage(page);
 
@@ -98,7 +98,7 @@ test.describe('Admin activates Agent', () => {
       await expect(userList.statusCell(agent.email)).toHaveText(/ACTIVE/i);
     });
 
-    test('Log out from the Admin account', async ({ page }) => {
+    test('Log out from the Admin account', { tag: '@smoke' }, async ({ page }) => {
       const dashboard = new DashboardPage(page);
 
       await dashboard.goto();
