@@ -3,6 +3,7 @@ import path from 'path';
 import { UserData } from '../pages/RegisterPage';
 
 const agentFile = path.join(__dirname, '..', 'test-data', 'agent.json');
+const historyFile = path.join(__dirname, '..', 'test-data', 'agents-history.json');
 
 const randomDigits = (length: number) =>
   Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
@@ -23,6 +24,13 @@ export function generateAgent(): UserData {
 export function saveAgent(agent: UserData) {
   fs.mkdirSync(path.dirname(agentFile), { recursive: true });
   fs.writeFileSync(agentFile, JSON.stringify(agent, null, 2));
+
+  // Keep every created agent so older ones can still be found manually
+  const history: (UserData & { createdAt: string })[] = fs.existsSync(historyFile)
+    ? JSON.parse(fs.readFileSync(historyFile, 'utf-8'))
+    : [];
+  history.push({ ...agent, createdAt: new Date().toISOString() });
+  fs.writeFileSync(historyFile, JSON.stringify(history, null, 2));
 }
 
 export function loadAgent(): UserData {
