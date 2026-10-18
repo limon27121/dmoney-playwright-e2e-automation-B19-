@@ -1,0 +1,25 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Session
+auth.json
+
+# Generated test data
+/test-data/
+
+# Generated CSV statements
+self_statement_*.csv
+
+# Local AI assistant notes
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

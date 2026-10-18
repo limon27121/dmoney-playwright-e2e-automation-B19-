@@ -1,0 +1,29 @@
+{
+  "name": "dmoney-playwright-e2e-automation",
+  "version": "1.0.0",
+  "description": "Playwright + TypeScript E2E automation for the DMoney Portal: Agent lifecycle, transactions, password reset and CSV statement export, with POM, smoke/regression suites and GitHub Actions CI.",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:smoke": "playwright test --grep @smoke",
+    "report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "typescript",
+    "e2e-testing",
+    "test-automation",
+    "page-object-model",
+    "sdet"
+  ],
+  "author": "limon27121",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/limon27121/dmoney-playwright-e2e-automation-B19-.git"
+  }
+}
