@@ -4,12 +4,12 @@ import { CashInPage } from '../pages/CashInPage';
 import { SelfStatementPage } from '../pages/SelfStatementPage';
 import { UserData } from '../pages/RegisterPage';
 import { loadAgent } from '../utils/agentData';
+import { loadCustomer } from '../utils/customerData';
 
 test.describe.configure({ mode: 'serial' });
 // Reuses the Agent session saved by 04-agentLoginBalance.spec.ts
 test.use({ storageState: 'auth.json' });
 
-const customerPhone = '01686606902';
 const openingBalance = 2000;
 const depositAmount = 500;
 const commissionRate = 0.025;
@@ -18,10 +18,13 @@ const expectedBalance = openingBalance - depositAmount + commission;
 
 test.describe('Agent deposits to Customer', () => {
   let agent: UserData;
+  let customerPhone: string;
   let trnxId: string;
 
   test.beforeAll(() => {
     agent = loadAgent();
+    // Fresh Customer created by 02-adminActivateAgent.spec.ts
+    customerPhone = loadCustomer().phone;
   });
 
   test('Verify the Agent can deposit 500 Tk to an existing Customer', { tag: '@smoke' }, async ({ page }) => {

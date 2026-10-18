@@ -5,21 +5,24 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { SelfStatementPage } from '../pages/SelfStatementPage';
 import { UserData } from '../pages/RegisterPage';
 import { loadAgent } from '../utils/agentData';
+import { loadCustomer } from '../utils/customerData';
 import { readCsv, todayStamp, writeCsv } from '../utils/csv';
 
 test.describe.configure({ mode: 'serial' });
 // Reuses the Agent session saved by 06-agentPasswordReset.spec.ts
 test.use({ storageState: 'auth.json' });
 
-const customerPhone = '01686606902';
 const expectedHeaders = ['Transaction ID', 'Sender Account', 'Receiver Account', 'Type', 'Debit', 'Credit', 'Balance', 'Date'];
 const csvFile = path.join(__dirname, '..', `self_statement_${todayStamp()}.csv`);
 
 test.describe('Agent Self Statement', () => {
   let agent: UserData;
+  let customerPhone: string;
 
   test.beforeAll(() => {
     agent = loadAgent();
+    // Fresh Customer created by 02-adminActivateAgent.spec.ts
+    customerPhone = loadCustomer().phone;
   });
 
   test('Verify the Self Statement contains the expected transaction data', { tag: '@smoke' }, async ({ page }) => {

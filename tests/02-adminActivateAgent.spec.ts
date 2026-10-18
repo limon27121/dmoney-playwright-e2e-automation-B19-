@@ -5,7 +5,9 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { UserListPage } from '../pages/UserListPage';
 import { UserDetailsPage } from '../pages/UserDetailsPage';
 import { UserData } from '../pages/RegisterPage';
+import { CreateUserPage } from '../pages/CreateUserPage';
 import { loadAgent } from '../utils/agentData';
+import { generateCustomer, saveCustomer } from '../utils/customerData';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -96,6 +98,33 @@ test.describe('Admin activates Agent', () => {
       await userList.goto();
       await userList.searchByEmail(agent.email);
       await expect(userList.statusCell(agent.email)).toHaveText(/ACTIVE/i);
+    });
+
+    // Customer used by 05-agentDepositToCustomer.spec.ts and 07-agentSelfStatementCsv.spec.ts
+    test('Verify Admin can create and activate a new Customer', { tag: '@smoke' }, async ({ page }) => {
+      const createUser = new CreateUserPage(page);
+      const userList = new UserListPage(page);
+      const userDetails = new UserDetailsPage(page);
+      const customer = generateCustomer();
+
+      await createUser.goto();
+      const responsePromise = page.waitForResponse(
+        (res) => res.url().includes('/user/create') && res.request().method() === 'POST'
+      );
+      await createUser.createUser(customer);
+      const response = await responsePromise;
+      expect(response.status()).toBe(201);
+      await expect(createUser.successMessage).toBeVisible();
+      saveCustomer(customer);
+
+      await userList.goto();
+      await userList.searchByEmail(customer.email);
+      await expect(userList.userRow(customer.email)).toContainText('Customer');
+      await userList.viewUser(customer.email);
+
+      await userDetails.changeStatus('Active');
+      await expect(userDetails.successMessage).toBeVisible();
+      await expect(userDetails.statusDropdown).toHaveText('Active');
     });
 
     test('Log out from the Admin account', { tag: '@smoke' }, async ({ page }) => {
