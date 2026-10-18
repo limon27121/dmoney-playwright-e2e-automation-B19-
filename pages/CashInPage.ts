@@ -6,13 +6,16 @@ export class CashInPage {
   readonly amountInput: Locator;
   readonly cashInButton: Locator;
   readonly successMessage: Locator;
+  readonly currentBalance: Locator;
 
   constructor(page: Page) {
     this.page = page;
     this.customerPhoneInput = page.locator('input[name="customer"]');
     this.amountInput = page.locator('input[name="amount"]');
     this.cashInButton = page.getByRole('button', { name: /Cash In/ });
-    this.successMessage = page.getByText(/deposit to Agent successful/i);
+    // "SYSTEM deposit to Agent successful" or "Deposit successful"
+    this.successMessage = page.getByText(/deposit.*successful/i);
+    this.currentBalance = page.getByText('CURRENT BALANCE').locator('xpath=following-sibling::*[1]');
   }
 
   async goto() {

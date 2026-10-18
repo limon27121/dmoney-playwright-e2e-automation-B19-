@@ -7,6 +7,8 @@ export class DashboardPage {
   readonly cashInLink: Locator;
   readonly selfStatementLink: Locator;
   readonly loggedInUser: Locator;
+  readonly balanceButton: Locator;
+  readonly balanceAmount: Locator;
   readonly profileMenu: Locator;
   readonly logoutMenuItem: Locator;
 
@@ -17,6 +19,8 @@ export class DashboardPage {
     this.cashInLink = page.getByRole('link', { name: 'Cash In' }).first();
     this.selfStatementLink = page.getByRole('link', { name: 'Self Statement' }).first();
     this.loggedInUser = page.locator('header p').nth(1);
+    this.balanceButton = page.getByRole('button', { name: 'Balance' });
+    this.balanceAmount = page.locator('header').getByText(/৳/);
     this.profileMenu = page.locator('header .MuiAvatar-root').first();
     this.logoutMenuItem = page.getByRole('menuitem', { name: /Logout/ });
   }
@@ -35,6 +39,10 @@ export class DashboardPage {
 
   async openSelfStatement() {
     await this.selfStatementLink.click();
+  }
+
+  async showBalance() {
+    await this.balanceButton.click();
   }
 
   async logout() {
