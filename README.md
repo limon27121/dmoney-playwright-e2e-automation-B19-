@@ -20,6 +20,7 @@ End-to-end test automation for the **DMoney Portal** using **Playwright + TypeSc
 │   ├── DashboardPage.ts        # Navigation, balance, logout
 │   ├── UserListPage.ts         # Admin user search
 │   ├── UserDetailsPage.ts      # Admin edit user / activate
+│   ├── CreateUserPage.ts       # Admin creates a new Customer
 │   ├── CashInPage.ts           # System and Agent deposits
 │   ├── SelfStatementPage.ts    # Statement table extraction
 │   ├── ForgotPasswordPage.ts
@@ -31,11 +32,14 @@ End-to-end test automation for the **DMoney Portal** using **Playwright + TypeSc
 │   ├── 04-agentLoginBalance.spec.ts
 │   ├── 05-agentDepositToCustomer.spec.ts
 │   ├── 06-agentPasswordReset.spec.ts
-│   └── 07-agentSelfStatementCsv.spec.ts
+│   ├── 07-agentSelfStatementCsv.spec.ts
+│   └── testReadMail.ts         # Gmail API check (not part of the suite)
 ├── utils/
 │   ├── agentData.ts            # Random Agent generator, shared between specs
+│   ├── customerData.ts         # Random Customer generator, shared between specs
 │   ├── gmail.ts                # Gmail API client: waits for new OTP / reset mails
 │   └── csv.ts                  # CSV write/read helpers
+├── screenshots/                # Regression and smoke result screenshots
 └── playwright.config.ts
 ```
 
@@ -43,10 +47,10 @@ End-to-end test automation for the **DMoney Portal** using **Playwright + TypeSc
 
 1. Open the DMoney Portal and navigate to the Sign Up page
 2. Register a new user with the **Agent** role
-3. Log in as **Admin** (`admin@dmoney.com`), find the new Agent and activate the account, then log out
+3. Log in as **Admin** (`admin@dmoney.com`), find the new Agent and activate the account, create and activate a fresh Customer, then log out
 4. Log in as **System** (`system@dmoney.com`), deposit 2000 Tk to the Agent, then log out
 5. Log in as the Agent (OTP read from Gmail) and verify the balance is 2000 Tk
-6. Deposit 500 Tk from the Agent to an existing Customer, verify the transaction, then log out
+6. Deposit 500 Tk from the Agent to the new Customer, verify the transaction, then log out
 7. Reset the Agent password via the emailed link; verify the old password fails and the new one works
 8. Open Self Statement, extract the full table and save it as `self_statement_YYYY-MM-DD.csv`
 
@@ -105,13 +109,17 @@ With these set, a fresh Gmail access token is fetched on every run. Alternativel
 ## Run Tests
 
 ```bash
-npm test              # full regression suite (23 tests)
+npm test              # full regression suite (24 tests)
 npm run test:headed   # regression in headed mode
-npm run test:smoke    # smoke suite: positive cases only, tagged @smoke (22 tests)
+npm run test:smoke    # smoke suite: positive cases only, tagged @smoke (23 tests)
 npm run report        # open the HTML report
 ```
 
 Specs depend on each other (the Agent registered in spec 01 is used by all later specs), so always run the whole suite, not a single spec.
+
+The only test outside the smoke suite is the negative check "login with the old password fails".
+
+The browser runs in the `UTC` timezone (`timezoneId` in `playwright.config.ts`). The app sets the Self Statement default date range in UTC but filters in local time, so between 00:00 and 06:00 BST new transactions would otherwise be hidden.
 
 ## Generated Files
 
@@ -120,6 +128,7 @@ Specs depend on each other (the Agent registered in spec 01 is used by all later
 | `auth.json` | Session (localStorage) saved after each login and reused by later tests |
 | `test-data/agent.json` | Agent created in the current run |
 | `test-data/agents-history.json` | Every Agent created so far |
+| `test-data/customer.json` | Customer created in the current run (fresh each run to stay under the 10,000 Tk wallet limit) |
 | `self_statement_YYYY-MM-DD.csv` | Exported Self Statement (also attached to the HTML report) |
 | `test-results/` | Per-test videos and failure screenshots |
 
@@ -131,7 +140,8 @@ All of these are git-ignored.
 
 ## Regression Test Result
 
-<!-- Add screenshot of the regression run here -->
+![Regression Test Result 1](screenshots/regression01.png)
+![Regression Test Result 2](screenshots/regression02.png)
 
 ## Smoke Test Result
 
